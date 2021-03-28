@@ -1,10 +1,11 @@
 class PromotionsController < ApplicationController
+    before_action :set_promotion, only: [:show, :generate_coupons, :edit, :update, :destroy]
+    
     def index
         @promotions = Promotion.all
     end
 
     def show
-        @promotion = Promotion.find(params[:id])
     end
 
     def new
@@ -21,38 +22,32 @@ class PromotionsController < ApplicationController
     end
 
     def generate_coupons
-        @promotion = Promotion.find(params[:id])
-
-        (1..@promotion.coupon_quantity).each do |number|
-            Coupon.create!(code: "#{@promotion.code}-#{'%04d' % number}", promotion: @promotion)
-        end
-
-        flash[:notice] = 'Cupons gerados com sucesso'
-        redirect_to @promotion
+        @promotion.generate_coupons!
+        redirect_to @promotion, notice: 'Cupons gerados com sucesso'
     end
 
     def edit
-        @promotion = Promotion.find(params[:id])
     end
 
     def update
-        @promotion = Promotion.find(params[:id])
         @promotion.update(promotion_params)
         redirect_to @promotion
     end
 
     def destroy
-        @promotion = Promotion.find(params[:id])
         @promotion.destroy
-        flash[:notice] = 'Promoção apagada!'
-        redirect_to promotions_path
+        redirect_to promotions_path, notice: 'Promoção apagada!'
     end
 
     private
-    
+
         def promotion_params
             params
             .require(:promotion)
             .permit(:name, :description, :coupon_quantity, :expiration_date, :code, :discount_rate)
+        end
+
+        def set_promotion
+            @promotion = Promotion.find(params[:id])
         end
 end
