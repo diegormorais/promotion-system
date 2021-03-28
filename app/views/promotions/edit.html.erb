@@ -1,0 +1,40 @@
+<h1>Registrar uma promoção</h1>
+
+<% if @promotion.errors.any? %>
+<h4>Não foi possível salvar, encontramos alguns erros:</h4>
+    <ul>
+        <% @promotion.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+        <% end %>
+    </ul>
+<% end %>
+
+<%= form_with model: @promotion do |f| %>
+    <div>
+        <%= f.label :name, 'Nome' %>
+        <%= f.text_field :name %>
+    </div>
+    <div>
+        <%= f.label :description, 'Descrição' %>
+        <%= f.text_area :description %>
+    </div>
+    <div>
+        <%= f.label :code, 'Código' %>
+        <%= f.text_field :code %>
+    </div>
+    <div>
+        <%= f.label :discount_rate, 'Desconto' %>
+        <%= f.number_field :discount_rate, in: 0..100%>
+    </div>
+    <div>
+        <%= f.label :coupon_quantity, 'Quantidade de cupons' %>
+        <%= f.number_field :coupon_quantity, min: 1, step: 0.1 %>
+    </div>
+    <div>
+        <%= f.label :expiration_date, 'Data de término' %>
+        <%= f.date_field :expiration_date %>
+    </div>
+    <div>
+        <%= f.submit 'Salvar'  %>
+    </div>
+<% end %>

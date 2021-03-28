@@ -145,4 +145,29 @@ class PromotionsTest < ApplicationSystemTestCase
     assert_text 'NATAL10-0100'
     assert_no_text 'NATAL10-0101'
   end
+
+  test 'edit promotion' do
+    promotion = Promotion.create!(name: 'Natal', description: 'Promoção de Natal',
+                                  code: 'NATAL10', discount_rate: 10, coupon_quantity: 100,
+                                  expiration_date: '22/12/2033')
+    
+    visit promotion_path(promotion)
+    click_on 'Editar'
+    fill_in 'Nome', with: 'Queima de Estoque'
+    fill_in 'Descrição', with: 'Promoção de Queima de Estoque'
+    fill_in 'Código', with: 'QUEIMA20'
+    fill_in 'Desconto', with: '20'
+    fill_in 'Quantidade de cupons', with: '50'
+    fill_in 'Data de término', with: '16/01/2022'
+    click_on 'Salvar'
+    
+    assert_current_path promotion_path(promotion)
+    assert_text 'Queima de Estoque'
+    assert_text 'Promoção de Queima de Estoque'
+    assert_text 'QUEIMA20'
+    assert_text '20,00%'
+    assert_text '50'
+    assert_text '16/01/2022'
+    assert_link 'Voltar'
+  end
 end
