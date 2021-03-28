@@ -1,6 +1,7 @@
 <%= flash[:notice] %>
 <%= link_to 'Voltar', promotions_path %>
 <%= link_to 'Editar', edit_promotion_path %>
+<%= link_to 'Apagar', promotion_path, method: :delete, data: { confirm: "Tem certeza que deseja apagar esta promoção?" } %>
 <h3><%= @promotion.name %></h3>
     <dl>
     <dt>Descrição</dt>
