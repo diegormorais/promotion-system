@@ -1,8 +1,8 @@
 class Promotion < ApplicationRecord
     has_many :coupons, dependent: :destroy
     
-    validates :name, :code, :discount_rate, :coupon_quantity, :expiration_date, presence: { message: 'não pode ficar em branco'}
-    validates :name, :code, uniqueness: { message: 'deve ser único' }
+    validates :name, :code, :discount_rate, :coupon_quantity, :expiration_date, presence: true
+    validates :name, :code, uniqueness: true
 
     def generate_coupons!
         return unless coupons.empty?
@@ -13,6 +13,7 @@ class Promotion < ApplicationRecord
         end
     end
 
+    # TODO: fazer testes para esse método
     def coupons?
         coupons.any?
     end
