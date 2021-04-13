@@ -40,6 +40,11 @@ class PromotionsController < ApplicationController
         redirect_to promotions_path, notice: 'Promoção apagada!'
     end
 
+    def search
+        @promotions = Promotion.search(params[:q])
+        render :index
+    end
+
     private
 
         def promotion_params
