@@ -1,6 +1,6 @@
 class PromotionsController < ApplicationController
     before_action :authenticate_user!
-    before_action :set_promotion, only: [:show, :generate_coupons, :edit, :update, :destroy]
+    before_action :set_promotion, only: [:show, :generate_coupons, :edit, :update, :destroy, :approve]
     
     def index
         @promotions = Promotion.all
@@ -14,7 +14,7 @@ class PromotionsController < ApplicationController
     end
 
     def create
-        @promotion = Promotion.create(promotion_params)
+        @promotion = current_user.promotions.new(promotion_params)
         if @promotion.save
             redirect_to @promotion
         else
@@ -43,6 +43,11 @@ class PromotionsController < ApplicationController
     def search
         @promotions = Promotion.search(params[:q])
         render :index
+    end
+
+    def approve
+        PromotionApproval.create!(promotion: @promotion, user: current_user)
+        redirect_to @promotion, notice: 'Promoção aprovada com sucesso'
     end
 
     private
