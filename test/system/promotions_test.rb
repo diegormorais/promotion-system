@@ -142,12 +142,15 @@ class PromotionsTest < ApplicationSystemTestCase
   test 'generate coupons for a promotion' do
     # Arrange
     user = User.create!(email: 'john.doe@iugu.com.br', password: '123456')
+    login_user(user)
     promotion = Promotion.create!(name: 'Natal', description: 'Promoção de Natal',
                                   code: 'NATAL10', discount_rate: 10, coupon_quantity: 100,
                                   expiration_date: '22/12/2033', user: user)
     
+    promotion.create_promotion_approval(
+      user: User.create!(email: 'juhn.doe@iugu.com.br', password: '123456')
+    )
     # Act
-    login_user
     visit promotion_path(promotion)
     click_on 'Gerar cupons'
 
@@ -194,6 +197,9 @@ class PromotionsTest < ApplicationSystemTestCase
                                   code: 'NATAL10', discount_rate: 10, coupon_quantity: 100,
                                   expiration_date: '22/12/2033', user: user)
     
+    promotion.create_promotion_approval(
+      user: User.create!(email: 'juhn.doe@iugu.com.br', password: '123456')
+    )
     login_user
     visit promotion_path(promotion)
     click_on 'Gerar cupons'
@@ -244,6 +250,18 @@ class PromotionsTest < ApplicationSystemTestCase
     refute_link 'Aprovar'
   end
 
+  test 'user can not approve his promotion' do
+    user = User.create!(email: 'john.doe@iugu.com.br', password: '123456')
+    christmas = Promotion.create!(name: 'Natal', description: 'Promoção de Natal',
+                                  code: 'NATAL10', discount_rate: 10, coupon_quantity: 100,
+                                  expiration_date: '22/12/2033', user: user)
+
+    approver = login_user(user)
+    visit promotion_path(christmas)
+ 
+    refute_link 'Aprovar'
+    refute_link 'Gerar cupons'
+  end
   # TODO: não encontra nada
   # TODO: visit página sem estar logado
 
@@ -276,5 +294,10 @@ class PromotionsTest < ApplicationSystemTestCase
     visit new_promotion_path
 
     assert_current_path new_user_session_path
+  end
+
+  # TODO: teste de login da aprovação
+
+  test 'cannot approve if owner' do
   end
 end
